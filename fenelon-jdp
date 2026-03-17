@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Énigmes - Journée de printemps</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #fff7d6, #e7ffd9, #dff7ff);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fleurs */
+.fleur {
+  position: absolute;
+  font-size: 28px;
+  opacity: 0.28;
+  animation: tomber linear infinite;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes tomber {
+  0% {
+    transform: translateY(-120px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+/* Carte */
+.carte {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 560px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 25px;
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  border: 3px solid #d7f5b0;
+}
+
+h1 {
+  margin-top: 0;
+  color: #2e7d32;
+  font-size: 2em;
+}
+
+.sous-titre {
+  color: #555;
+  margin-bottom: 22px;
+  font-size: 1.05em;
+}
+
+/* Cases code */
+.code-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: nowrap;
+}
+
+.case-code {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 2px solid #66bb6a;
+  border-radius: 14px;
+  background: #fbfff7;
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: bold;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.case-code:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 10px rgba(102, 187, 106, 0.35);
+  transform: scale(1.05);
+}
+
+.case-code:disabled {
+  background: #eeeeee;
+  color: #666;
+}
+
+/* Bouton */
+button {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 1.1em;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+  box-shadow: 0 8px 20px rgba(67, 160, 71, 0.25);
+}
+
+button:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+button:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.essais {
+  margin-top: 15px;
+  color: #666;
+  font-size: 0.98em;
+}
+
+/* Message */
+#message {
+  margin-top: 25px;
+  padding: 18px;
+  border-radius: 18px;
+  font-size: 1.12em;
+  font-weight: bold;
+  min-height: 90px;
+  display: none;
+  line-height: 1.5em;
+}
+
+.gagne {
+  display: block !important;
+  background: #ecffec;
+  color: #1b5e20;
+  border: 2px solid #81c784;
+  animation: pulse 0.6s ease-in-out 2;
+}
+
+.perdu {
+  display: block !important;
+  background: #fff3e0;
+  color: #e65100;
+  border: 2px solid #ffb74d;
+}
+
+.bloque {
+  display: block !important;
+  background: #ffebee;
+  color: #b71c1c;
+  border: 2px solid #ef9a9a;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* Confettis */
+.confetti {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  top: -20px;
+  border-radius: 3px;
+  animation: chute 3s linear forwards;
+  z-index: 3;
+}
+
+@keyframes chute {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .carte {
+    padding: 28px 18px;
+  }
+
+  .code-container {
+    gap: 8px;
+  }
+
+  .case-code {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5em;
+  }
+
+  h1 {
+    font-size: 1.55em;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="fleur" style="left:5%; animation-duration: 10s;">🌸</div>
+<div class="fleur" style="left:15%; animation-duration: 14s;">🌼</div>
+<div class="fleur" style="left:28%; animation-duration: 12s;">🍃</div>
+<div class="fleur" style="left:42%; animation-duration: 16s;">🌷</div>
+<div class="fleur" style="left:58%; animation-duration: 11s;">🌸</div>
+<div class="fleur" style="left:72%; animation-duration: 15s;">🌼</div>
+<div class="fleur" style="left:85%; animation-duration: 13s;">🍃</div>
+<div class="fleur" style="left:92%; animation-duration: 17s;">🌷</div>
+
+<div class="carte">
+  <h1>🌸 Énigmes - Journée de printemps 🌸</h1>
+  <div class="sous-titre">Entrez le code secret à 5 chiffres</div>
+
+  <div class="code-container">
+    <input type="text" maxlength="1" class="case-code" id="c1" oninput="passerSuivant(this, 'c2')">
+    <input type="text" maxlength="1" class="case-code" id="c2" oninput="passerSuivant(this, 'c3')">
+    <input type="text" maxlength="1" class="case-code" id="c3" oninput="passerSuivant(this, 'c4')">
+    <input type="text" maxlength="1" class="case-code" id="c4" oninput="passerSuivant(this, 'c5')">
+    <input type="text" maxlength="1" class="case-code" id="c5" oninput="passerSuivant(this, null)">
+  </div>
+
+  <button id="btnValider" onclick="verifierCode()">Valider</button>
+
+  <div class="essais" id="essaisTexte">Essais restants : 3</div>
+
+  <div id="message"></div>
+</div>
+
+<script>
+const bonCode = "53726";
+let essais = 0;
+const maxEssais = 3;
+
+function passerSuivant(element, suivantId) {
+  element.value = element.value.replace(/[^0-9]/g, '');
+
+  if (element.value.length === 1 && suivantId) {
+    document.getElementById(suivantId).focus();
+  }
+}
+
+function jouerSon(freq, duree) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.frequency.value = freq;
+  osc.type = "sine";
+
+  osc.start();
+
+  gain.gain.setValueAtTime(0.2, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duree);
+
+  osc.stop(ctx.currentTime + duree);
+}
+
+function sonVictoire() {
+  jouerSon(800, 0.2);
+  setTimeout(() => jouerSon(1000, 0.2), 200);
+  setTimeout(() => jouerSon(1200, 0.3), 400);
+}
+
+function sonDefaite() {
+  jouerSon(200, 0.4);
+}
+
+function lancerConfettis() {
+  for (let i = 0; i < 80; i++) {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
+    confetti.style.transform = "rotate(" + (Math.random() * 360) + "deg)";
+
+    const couleurs = ["#ffeb3b", "#f06292", "#4dd0e1", "#81c784", "#ff8a65", "#ba68c8"];
+    confetti.style.backgroundColor = couleurs[Math.floor(Math.random() * couleurs.length)];
+
+    document.body.appendChild(confetti);
+
+    setTimeout(() => {
+      confetti.remove();
+    }, 4000);
+  }
+}
+
+function verifierCode() {
+  const c1 = document.getElementById("c1").value;
+  const c2 = document.getElementById("c2").value;
+  const c3 = document.getElementById("c3").value;
+  const c4 = document.getElementById("c4").value;
+  const c5 = document.getElementById("c5").value;
+  const codeEntre = c1 + c2 + c3 + c4 + c5;
+
+  const message = document.getElementById("message");
+  const essaisTexte = document.getElementById("essaisTexte");
+  const bouton = document.getElementById("btnValider");
+
+  message.className = "";
+
+  if (codeEntre.length < 5) {
+    message.innerHTML = "⚠️ Veuillez entrer les 5 chiffres du code.";
+    message.classList.add("perdu");
+    return;
+  }
+
+  if (codeEntre === bonCode) {
+    sonVictoire();
+    lancerConfettis();
+
+    message.innerHTML = "🎉 C'est gagné !<br><br>+10 points pour votre équipe !<br>Montrez cet écran à un organisateur pour valider vos points !";
+    message.classList.add("gagne");
+    bouton.disabled = true;
+
+    document.getElementById("c1").disabled = true;
+    document.getElementById("c2").disabled = true;
+    document.getElementById("c3").disabled = true;
+    document.getElementById("c4").disabled = true;
+    document.getElementById("c5").disabled = true;
+
+  } else {
+    essais++;
+    sonDefaite();
+
+    const restants = maxEssais - essais;
+
+    if (essais >= maxEssais) {
+      message.innerHTML = "❌ Perdu !<br>Vous avez utilisé vos 3 essais.";
+      message.classList.add("bloque");
+
+      bouton.disabled = true;
+      document.getElementById("c1").disabled = true;
+      document.getElementById("c2").disabled = true;
+      document.getElementById("c3").disabled = true;
+      document.getElementById("c4").disabled = true;
+      document.getElementById("c5").disabled = true;
+
+      essaisTexte.innerHTML = "Essais restants : 0";
+    } else {
+      message.innerHTML = "❌ Perdu ! Essayez encore.<br>Il vous reste " + restants + " essai(s).";
+      message.classList.add("perdu");
+
+      essaisTexte.innerHTML = "Essais restants : " + restants;
+
+      document.getElementById("c1").value = "";
+      document.getElementById("c2").value = "";
+      document.getElementById("c3").value = "";
+      document.getElementById("c4").value = "";
+      document.getElementById("c5").value = "";
+      document.getElementById("c1").focus();
+    }
+  }
+}
+</script>
+
+</body>
+</html>
